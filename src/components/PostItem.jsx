@@ -1,14 +1,16 @@
 import React from "react";
 
-const StyledComponent = () => {
+const PostItem = (props) => {
+
+    console.log(props.post);
 
     return (
         <div className='App'>
             <div className='post'>
                 <div className='post__content'>
-                    <strong>1. Javascript</strong>
+                    <strong>{props.post.id}. {props.post.title}</strong>
                     <div>
-                        Javascript is a very popular programming language at present.
+                        {props.post.description}
                     </div>
                 </div>
                 <div className='post__btns'>
@@ -19,4 +21,4 @@ const StyledComponent = () => {
     )
 }
 
-export default StyledComponent
+export default PostItem
