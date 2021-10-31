@@ -1,16 +1,16 @@
 import React from "react";
 
-const PostItem = (props) => {
+const PostItem = ({post}) => {
 
-    console.log(props.post);
+    console.log(post);
 
     return (
         <div className='App'>
             <div className='post'>
                 <div className='post__content'>
-                    <strong>{props.post.id}. {props.post.title}</strong>
+                    <strong>{post.id}. {post.title}</strong>
                     <div>
-                        {props.post.description}
+                        {post.description}
                     </div>
                 </div>
                 <div className='post__btns'>
