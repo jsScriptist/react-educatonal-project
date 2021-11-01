@@ -26,15 +26,24 @@ function App() {
   ]);
 
   const createPost = (newPost) => {
-    setPosts([...posts, newPost])
-  }
+    setPosts([...posts, newPost]);
+  };
+  const removePost = (post) => {
+    setPosts(posts.filter((p) => p.id !== post.id));
+  };
 
   return (
     <div className="App">
       <Counter />
       <ClassCounter />
       <StyledComponent />
-      <PostList posts={posts} title={"Post List"} />
+      {
+        (posts.length !== 0 ? (
+          <PostList remove={removePost} posts={posts} title={"Post List"} />
+        ) : (
+          <div style={{textAlign: "center", fontSize: "20px"}}><b>No posts yet!</b></div>
+        ))
+      }
       <PostForm create={createPost} />
     </div>
   );
