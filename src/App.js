@@ -5,6 +5,7 @@ import StyledComponent from "./components/StyledComponent";
 import "./styles/App.css";
 import { PostList } from "./components/PostList";
 import { PostForm } from "./components/PostForm";
+import { MySelect } from "./components/UI/select/MySelect";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -32,18 +33,34 @@ function App() {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
 
+  const [selectedSort, setSelectedSort] = useState("");
+  const sortPosts = (sort) => {
+    setSelectedSort(sort)
+    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])))
+  }
+
   return (
     <div className="App">
       <Counter />
       <ClassCounter />
       <StyledComponent />
-      {
-        (posts.length !== 0 ? (
-          <PostList remove={removePost} posts={posts} title={"Post List"} />
-        ) : (
-          <div style={{textAlign: "center", fontSize: "20px"}}><b>No posts yet!</b></div>
-        ))
-      }
+      <hr style={{ margin: "20px 0" }} />
+      <MySelect
+        value={selectedSort}
+        onChange={sortPosts}
+        defaultValue={"Sort by..."}
+        options={[
+          { value: "title", name: "title" },
+          { value: "description", name: "description" },
+        ]}
+      />
+      {posts.length ? (
+        <PostList remove={removePost} posts={posts} title={"Post List"} />
+      ) : (
+        <div style={{ textAlign: "center", fontSize: "20px" }}>
+          <b>No posts yet!</b>
+        </div>
+      )}
       <PostForm create={createPost} />
     </div>
   );
