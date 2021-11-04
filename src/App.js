@@ -8,6 +8,7 @@ import { PostForm } from "./components/PostForm";
 import { PostFilter } from "./components/PostFilter";
 import { MyModal } from "./components/UI/MyModal/MyModal";
 import { MyButton } from "./components/UI/buttons/MyButton";
+import { useSortedPosts } from './hooks/usePosts';
 
 function App() {
   const [posts, setPosts] = useState([
@@ -37,20 +38,8 @@ function App() {
   const removePost = (post) => {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
-  const sortedPosts = useMemo(() => {
-    if (filter.sort) {
-      return [...posts].sort((a, b) =>
-        a[filter.sort].localeCompare(b[filter.sort])
-      );
-    }
-    return posts;
-  }, [filter.sort, posts]);
 
-  const sortedAndSearchedPosts = useMemo(() => {
-    return sortedPosts.filter((post) =>
-      post.title.toLowerCase().includes(filter.query.toLowerCase())
-    );
-  }, [filter.query, sortedPosts]);
+  const sortedAndSearchedPosts = useSortedPosts(posts, filter.sort, filter.query)
 
   return (
     <div className="App">
