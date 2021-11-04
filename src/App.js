@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Counter from "./components/Counter";
 import ClassCounter from "./components/ClassCounter";
 import StyledComponent from "./components/StyledComponent";
@@ -26,10 +26,12 @@ function App() {
 
   const sortedAndSearchedPosts = useSortedPosts(posts, filter.sort, filter.query)
 
-  async function fetchedPosts() {
+  async function fetchPosts() {
     const response = await axios.get('https://jsonplaceholder.typicode.com/posts')
     setPosts(response.data)
   }
+
+  useEffect(() => {fetchPosts()}, [])
 
   return (
     <div className="App">
@@ -49,7 +51,7 @@ function App() {
       <MyButton style={{ marginTop: 20 }} onClick={() => setModal(true)}>
         Create a new post
       </MyButton>
-      <MyButton style={{ marginLeft: 20 }} onClick={fetchedPosts}>Load posts</MyButton>
+      <MyButton style={{ marginLeft: 20 }} onClick={fetchPosts}>Load posts</MyButton>
     </div>
   );
 }
