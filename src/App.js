@@ -6,6 +6,8 @@ import "./styles/App.css";
 import { PostList } from "./components/PostList";
 import { PostForm } from "./components/PostForm";
 import { PostFilter } from "./components/PostFilter";
+import { MyModal } from "./components/UI/MyModal/MyModal";
+import { MyButton } from "./components/UI/buttons/MyButton";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -26,9 +28,11 @@ function App() {
     },
   ]);
   const [filter, setFilter] = useState({ sort: "", query: "" });
+  const [modal, setModal] = useState(false);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
+    setModal(false);
   };
   const removePost = (post) => {
     setPosts(posts.filter((p) => p.id !== post.id));
@@ -55,13 +59,17 @@ function App() {
       <StyledComponent />
       <hr style={{ margin: "20px 0" }} />
       <PostFilter filter={filter} setFilter={setFilter} />
-
+      <MyModal visible={modal} setVisible={setModal}>
+        <PostForm create={createPost} />
+      </MyModal>
       <PostList
         remove={removePost}
         posts={sortedAndSearchedPosts}
         title={"Post List"}
       />
-      <PostForm create={createPost} />
+      <MyButton style={{ marginTop: 20 }} onClick={() => setModal(true)}>
+        Create a new post
+      </MyButton>
     </div>
   );
 }
