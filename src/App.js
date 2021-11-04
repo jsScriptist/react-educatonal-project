@@ -8,13 +8,15 @@ import { PostForm } from "./components/PostForm";
 import { PostFilter } from "./components/PostFilter";
 import { MyModal } from "./components/UI/MyModal/MyModal";
 import { MyButton } from "./components/UI/buttons/MyButton";
-import { useSortedPosts } from './hooks/usePosts';
-import axios from "axios";
+import { useSortedPosts } from "./hooks/usePosts";
+import PostService from "./components/API/PostService";
+import { Loader } from "./components/UI/loader/Loader";
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState({ sort: "", query: "" });
   const [modal, setModal] = useState(false);
+  const [isPostLoading, setIsPostLoading] = useState(false);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
@@ -24,14 +26,22 @@ function App() {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
 
-  const sortedAndSearchedPosts = useSortedPosts(posts, filter.sort, filter.query)
+  const sortedAndSearchedPosts = useSortedPosts(
+    posts,
+    filter.sort,
+    filter.query
+  );
 
   async function fetchPosts() {
-    const response = await axios.get('https://jsonplaceholder.typicode.com/posts')
-    setPosts(response.data)
+    setIsPostLoading(true);
+    const response = await PostService.getAll();
+    setPosts(response);
+    setIsPostLoading(false);
   }
 
-  useEffect(() => {fetchPosts()}, [])
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   return (
     <div className="App">
@@ -43,15 +53,25 @@ function App() {
       <MyModal visible={modal} setVisible={setModal}>
         <PostForm create={createPost} />
       </MyModal>
-      <PostList
-        remove={removePost}
-        posts={sortedAndSearchedPosts}
-        title={"Post List"}
-      />
+
+      {isPostLoading ? (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Loader />
+        </div>
+      ) : (
+        <PostList
+          remove={removePost}
+          posts={sortedAndSearchedPosts}
+          title={"Post List"}
+        />
+      )}
+
       <MyButton style={{ marginTop: 20 }} onClick={() => setModal(true)}>
         Create a new post
       </MyButton>
-      <MyButton style={{ marginLeft: 20 }} onClick={fetchPosts}>Load posts</MyButton>
+      <MyButton style={{ marginLeft: 20 }} onClick={fetchPosts}>
+        Load posts
+      </MyButton>
     </div>
   );
 }
