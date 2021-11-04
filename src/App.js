@@ -9,25 +9,10 @@ import { PostFilter } from "./components/PostFilter";
 import { MyModal } from "./components/UI/MyModal/MyModal";
 import { MyButton } from "./components/UI/buttons/MyButton";
 import { useSortedPosts } from './hooks/usePosts';
+import axios from "axios";
 
 function App() {
-  const [posts, setPosts] = useState([
-    {
-      id: 10,
-      title: "The 10th post",
-      description: "This is some post description 10=10=10",
-    },
-    {
-      id: 11,
-      title: "The 11th post",
-      description: "This is some post description 1111111",
-    },
-    {
-      id: 12,
-      title: "The 12th post",
-      description: "This is some post description 12121212",
-    },
-  ]);
+  const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState({ sort: "", query: "" });
   const [modal, setModal] = useState(false);
 
@@ -40,6 +25,11 @@ function App() {
   };
 
   const sortedAndSearchedPosts = useSortedPosts(posts, filter.sort, filter.query)
+
+  async function fetchedPosts() {
+    const response = await axios.get('https://jsonplaceholder.typicode.com/posts')
+    setPosts(response.data)
+  }
 
   return (
     <div className="App">
@@ -59,6 +49,7 @@ function App() {
       <MyButton style={{ marginTop: 20 }} onClick={() => setModal(true)}>
         Create a new post
       </MyButton>
+      <MyButton style={{ marginLeft: 20 }} onClick={fetchedPosts}>Load posts</MyButton>
     </div>
   );
 }
