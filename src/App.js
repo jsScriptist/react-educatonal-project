@@ -11,12 +11,16 @@ import { MyButton } from "./components/UI/buttons/MyButton";
 import { useSortedPosts } from "./hooks/usePosts";
 import PostService from "./components/API/PostService";
 import { Loader } from "./components/UI/loader/Loader";
+import { useFetching } from './hooks/useFetching';
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState({ sort: "", query: "" });
   const [modal, setModal] = useState(false);
-  const [isPostLoading, setIsPostLoading] = useState(false);
+  const [fetchPosts, isPostLoading, postError] = useFetching(async () => {
+    const posts = await PostService.getAll()
+    setPosts(posts)
+  })
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
@@ -32,13 +36,6 @@ function App() {
     filter.query
   );
 
-  async function fetchPosts() {
-    setIsPostLoading(true);
-    const response = await PostService.getAll();
-    setPosts(response);
-    setIsPostLoading(false);
-  }
-
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -53,7 +50,7 @@ function App() {
       <MyModal visible={modal} setVisible={setModal}>
         <PostForm create={createPost} />
       </MyModal>
-
+      {postError && <h1 className="error">Post loading error: {postError}</h1>}
       {isPostLoading ? (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Loader />
