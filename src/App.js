@@ -47,8 +47,12 @@ function App() {
   );
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    fetchPosts()
+  }, [page]);
+
+  const changPage = (page) => {
+    setPage(page)
+  }
 
   return (
     <div className="App">
@@ -81,7 +85,7 @@ function App() {
       </MyButton>
       <div className="page__wrapper">
         {arrOfPageNumbers.map((n) => (
-          <span onClick={() => setPage(n)}
+          <span onClick={() => changPage(n)}
            key={n} className={page === n ? "page page__current" : "page"}>
             {n}
           </span>
